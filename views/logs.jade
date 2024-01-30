@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  -  function getColor(line) { 
+  -    if (line.includes('"ERROR"')) return "#FE5E51"; 
+  -    if (line.includes('"WARNING"')) return "#FF9754"; 
+  -    if (line.includes('"INFO"')) return "LightGreen"; 
+  -    if (line.includes('"DEBUG"')) return "#FFF97B";
+  -    return "White";
+  -  };
+  h1 Log #{ns} #{dep}
+  #container
+    pre
+      for line in data.split('\n')
+        - try {
+            p(style={'background-color': getColor(line)}) #{JSON.stringify(JSON.parse(line), null, 2)}
+        - } catch (e) {
+            p(style={'background-color': getColor(line)})  #{line}
+        - }

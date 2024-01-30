@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1 Un-Deploy xApp
+  #container
+  pre
+    form(action='/undeploy',method='post')
+      - each app in apps
+        p
+          input(id='id-#{app.name}', type='radio', value='#{app.name}', placeholder='', name='xapp-name')
+          label(for='id-#{app.name}') #{app.name}
+      input(type='submit',value='🗑',data-transition='fade', data-theme='c')

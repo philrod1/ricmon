@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1 Deploy xApp
+   div
+  form(action='/deploy',method='post')
+    div(data-role='fieldcontain')
+      fieldset(data-role='controlgroup')
+        label(for='Git URL') Git URL: 
+           input(id='git-url', type='text', value='', placeholder='https://github.com/<username>/<repo>.git', name='git-url')
+    div(data-role='fieldcontain')   
+      input(type='submit',value='Submit',data-transition='fade', data-theme='c')

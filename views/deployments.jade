@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1= title
+  #container
+  pre
+    table
+      thead
+        tr
+          - for (var j = 0; j < data[0].length; ++j) {
+            th= data[0][j]
+          - }
+          th ⏻
+      tbody
+          - for (var i = 1; i < data.length; ++i) 
+            tr
+            - for (var j = 0; j < data[i].length; ++j)
+              td= data[i][j]
+            td: a(href=`/restart/${data[i][0]}/${data[i][1]}/`): button(type="button") ↺

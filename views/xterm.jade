@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    title= RIC
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/xterm.css')
+    script(src='/javascripts/xterm.js')
+    script(src='/javascripts/addon-attach.js')
+  body
+    h2 H Release RIC
+    include buttons.jade
+    h1= Xterm
+      #container
+       div(id='terminal')
+    script.
+      const term = new Terminal()
+      const socket = new WebSocket('wss://192.168.122.182:2376/containers/b65e19defdfe/attach/ws')
+      console.log(socket)
+      const attachAddon = new AttachAddon.AttachAddon(socket)
+      term.loadAddon(attachAddon)
