@@ -18,7 +18,7 @@ if ! [ -f $schema_file ]; then
   cp ../../example-schema.json $schema_file
 fi
 app_name=$(cat $config_file | jq '.containers[0].name' | tr -d '"')
-tmp="$(jq '.containers[0].image.registry = "example.com:80"' $config_file)" && echo -E "${tmp}" > $config_file
+tmp="$(jq '.containers[0].image.registry = "oaic.local:5001"' $config_file)" && echo -E "${tmp}" > $config_file
 version=$(cat $config_file | jq '.version' | tr -d '"')
 name=$(cat $config_file | jq '.containers[0].image.name' | tr -d '"' | sed 's/.*\///')
 tmp="$(jq ".containers[0].image.name = \"$name\"" $config_file)" && echo -E "${tmp}" > $config_file
@@ -29,7 +29,7 @@ echo $tag
 dms_cli uninstall --xapp_chart_name=$app_name --namespace=ricxapp
 docker builder prune -af
 echo "Before build"
-docker build --no-cache -t example.com:80/$name:$tag . 2>&1
+docker build --no-cache -t localhost:5001/$name:$tag . 2>&1
 echo "After build"
 dms_cli onboard ./$config_file ./$schema_file
 dms_cli install $app_name $version ricxapp
