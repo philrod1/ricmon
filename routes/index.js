@@ -17,13 +17,12 @@ router.get('/charts', (req, res, next) => {
 });
 
 router.get('/appmgr', (req, res, next) => {
-  const result = getJSON('http://10.97.161.231:8080/ric/v1/xapps', '', 'get');
-  result.then( json => {
-    res.send(json);
+  exec("echo $APPMGR_HTTP", (error, stdout, stderr) => {
+    const result = getJSON(`http://${stdout}:8080/ric/v1/xapps`, '', 'get');
+    result.then( json => {
+      res.send(json);
+    });
   });
-  // exec(`curl -s http://10.110.216.184:8080/ric/v1/xapps | jq .`, (error, stdout, stderr) => {
-  //   res.render('json', {title: 'App Manager Says ...', json: stdout});
-  // });
 });
 
 router.get('/xapps', (req, res, next) => {
@@ -33,16 +32,20 @@ router.get('/xapps', (req, res, next) => {
 });
 
 router.get('/ric', (req, res, next) => {
-  const result = getJSON('http://10.97.161.231:8080/ric/v1/config', '', 'get');
-  result.then( json => {
-    res.send(json);
+  exec("echo $APPMGR_HTTP", (error, stdout, stderr) => {
+    const result = getJSON(`http://${stdout}:8080/ric/v1/config`, '', 'get');
+    result.then( json => {
+      res.send(json);
+    });
   });
 });
 
 router.get('/e2mgr', (req, res, next) => {
-  const result = getJSON('http://10.100.34.90:3800/v1/nodeb/states', '', 'get');
-  result.then( json => {
-    res.send(json);
+  exec("echo $E2MGR_HTTP", (error, stdout, stderr) => {
+    const result = getJSON(`http://${stdout}:3800/v1/nodeb/states`, '', 'get');
+    result.then( json => {
+      res.send(json);
+    });
   });
 });
 
