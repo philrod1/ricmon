@@ -40,7 +40,7 @@ router.get('/ric', (req, res, next) => {
 });
 
 router.get('/e2mgr', (req, res, next) => {
-  const result = getJSON('http://10.100.34.90:3800/v1/nodeb/states', '', 'get');
+  const result = getJSON('http://10.102.241.100:3800/v1/nodeb/states', '', 'get');
   result.then( json => {
     res.send(json);
   });

@@ -1,4 +1,9 @@
+html {
+  height: 100%;
+}
+
 body {
+  height: 80%;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -15,4 +20,29 @@ table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
   padding: 3px 10px 3px 10px;
+}
+
+.column {
+  float: left;
+  width: 30%;
+  border-radius: 25px;
+  border: 2px solid #73AD21;
+  padding: 20px;
+  overflow: scroll;
+  height: 100%;
+}
+
+.column::-webkit-scrollbar {
+  display: none;
+}
+
+.row {
+  height:100%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
 }
