@@ -8,27 +8,28 @@ html
     h2 OAIC RIC
     include buttons.jade
     h2= title
-    .row
+
+    <!-- Tab buttons -->
+    div
+      each log in logs
+        button.tab-button(onclick='openTab(event, \"tab-#{log}\")') #{log}
+
+    <!-- Tab content -->
+    each log in logs
+      div.tab(id='tab-#{log}')
         .column
-            p ENB
-            pre#enb
-        .column
-            p EPC
-            pre#epc
-        .column
-            p UE
-            pre#ue
+          pre(id='#{log}')
 
     script.
       // Function to fetch data from API endpoints and update columns
       function fetchDataAndUpdate() {
-
-        ["enb", "epc", "ue"].forEach( elem => {
-            axios.get('srs/' + elem)
+        const elements = !{JSON.stringify(logs)};
+        elements.forEach( elem => {
+            axios.get('srs/logs/' + elem)
           .then(response => {
             element = document.getElementById(elem);
             element.innerText = response.data;
-            //- element.scrollTop = element.scrollHeight;
+            element.scrollTop = element.scrollHeight;
           })
           .catch(error => {
             console.error(`Error fetching data for ${elem}:`, error);
@@ -37,6 +38,20 @@ html
     
       }
 
-      fetchDataAndUpdate();
+      function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+        fetchDataAndUpdate();
+      }
 
-      setInterval(fetchDataAndUpdate, 1000);
+      document.getElementsByClassName("tab")[0].style.display = "block";
+      fetchDataAndUpdate();

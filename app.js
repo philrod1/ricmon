@@ -6,6 +6,9 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var srsRouter = require('./routes/srs');
+var epcRouter = require('./routes/epc');
+var enbRouter = require('./routes/enb');
+var simRouter = require('./routes/sim');
 var logsRouter = require('./routes/logs');
 var descriptionRouter = require('./routes/description');
 
@@ -23,6 +26,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/srs', srsRouter);
+app.use('/epc', epcRouter);
+app.use('/enb', enbRouter);
+app.use('/sim', simRouter);
 app.use('/logs', logsRouter);
 app.use('/description', descriptionRouter);
 

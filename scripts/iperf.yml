@@ -1,0 +1,23 @@
+---
+  - name: "Start iperf screens"
+    hosts: localhost
+    connection: local 
+    tasks:
+
+    - name: "Start iperf server 1"
+      shell: "screen -mdSA s1 /bin/bash -c 'iperf3 -s -i 1 -p 5201'"
+
+    - name: "Start iperf server 2"
+      shell: "screen -mdSA s2 /bin/bash -c 'iperf3 -s -i 1 -p 5301'"
+
+    - name: "Start iperf server 3"
+      shell: "screen -mdSA s3 /bin/bash -c 'iperf3 -s -i 1 -p 5401'"
+
+#    - name: "Start iperf client 1"
+#      shell: screen -mdSA c1 /bin/bash -c "ip netns exec ue1 iperf3 -c 172.16.0.1 -b 10M -i 1 -t 600 -p 5201 --forceflush | grep -Po '[0-9.]*(?= Mbits/sec)' > /home/evo/iperf/client1.stats'"
+
+#    - name: "Start iperf client 2"
+#      shell: "screen -mdSA c2 /bin/bash -c 'ip netns exec ue2 iperf3 -c 172.16.0.1 -b 10M -i 1 -t 600 -p 5301 2>&1 | tee /home/evo/srs_logs/client2.log'"
+
+#    - name: "Start iperf client 3"
+#      shell: "screen -mdSA c3 /bin/bash -c 'ip netns exec ue3 iperf3 -c 172.16.0.1 -b 10M -i 1 -t 600 -p 5401 2>&1 | tee /home/evo/srs_logs/client3.log'"

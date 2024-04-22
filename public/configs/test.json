@@ -1,0 +1,53 @@
+{
+    "name": "Test config",
+    "width": 1000,
+    "height": 1000,
+    "gnbs": [
+        {
+            "x": 40,
+            "y": 500,
+            "power": 1000,
+            "name": "ENB1",
+            "id": "0x190"
+        },
+        {
+            "x": 960,
+            "y": 500,
+            "power": 1000,
+            "name": "ENB2",
+            "id": "0x191"
+        }
+    ],
+    "ues": [
+        {
+            "speed": 0.5,
+            "power": 500,
+            "name": "Normal"
+        },
+        {
+            "speed": 0.2,
+            "power": 500,
+            "name": "Slow"
+        },
+        {
+            "speed": 1,
+            "power": 500,
+            "name": "Fast"
+        },
+        {
+            "speed": 0.2,
+            "power": 500,
+            "name": "Slow"
+        },
+        {
+            "speed": 1,
+            "power": 500,
+            "name": "Fast"
+        },
+        {
+            "speed": 0,
+            "power": 500,
+            "name": "Stationary"
+        }
+    ]
+}

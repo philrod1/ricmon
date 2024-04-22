@@ -1,0 +1,54 @@
+doctype html
+html
+  head
+    title RIC
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='https://unpkg.com/axios/dist/axios.min.js') // Include Axios library
+    script(src='https://cdn.jsdelivr.net/npm/apexcharts') // Include Apex Charts library
+  body
+    h2 OAIC RIC
+    include buttons.jade
+    h2= title
+    #chart 
+    script.
+      function fetchDataAndUpdateChart() {
+      // Make API call to fetch data
+      fetch('chart')
+          .then(response => response.json())
+          .then(data => {
+            chart.updateSeries(data);
+          })
+          .catch(error => console.error('Error fetching data:', error));
+      }
+  
+      // Create initial chart configuration
+      const options = {
+        chart: {
+            type: 'line',
+            height: 500,
+            animations: {
+                enabled: false,
+            //-     easing: 'linear',
+            //-     dynamicAnimation: {
+            //-         speed: 1000
+            //-     }
+            },
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        series: [{ data: [] }],
+        xaxis: {
+            categories: []
+        },
+      };
+  
+      // Create chart instance
+      const chart = new ApexCharts(document.querySelector("#chart"), options);
+  
+      // Render chart
+      chart.render();
+  
+      // Fetch data and update chart every second
+      fetchDataAndUpdateChart(); // Initial fetch
+      setInterval(fetchDataAndUpdateChart, 1000); // Fetch every second

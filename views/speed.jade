@@ -1,0 +1,62 @@
+doctype html
+html
+  head
+    title RIC
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='https://bernii.github.io/gauge.js/dist/gauge.min.js') // Include Gauge library
+  body
+    h2 OAIC RIC
+    include buttons.jade
+    h2= title
+    #preview
+      canvas#canvas-preview(width='380', height='150')
+      #preview-textfield
+    script.
+      function createGaugeChart() {
+
+        const opts = {
+          angle: 0.15, // The span of the gauge arc
+          lineWidth: 0.44, // The line thickness
+          radiusScale: 1, // Relative radius
+          pointer: {
+            length: 0.6, // // Relative to gauge radius
+            strokeWidth: 0.035, // The thickness
+            color: '#000000' // Fill color
+          },
+          limitMax: false,     // If false, max value increases automatically if value > maxValue
+          limitMin: false,     // If true, the min value of the gauge will be fixed
+          colorStart: '#6FADCF',   // Colors
+          colorStop: '#8FC0DA',    // just experiment with them
+          strokeColor: '#E0E0E0',  // to see which ones work best for you
+          generateGradient: true,
+          highDpiSupport: true,     // High resolution support
+        };
+        const target = document.getElementById('canvas-preview');
+        const gauge = new Gauge(target).setOptions(opts);
+        gauge.maxValue = 10;
+        gauge.setMinValue(0);
+        gauge.animationSpeed = 128;
+        const txt = document.getElementById('preview-textfield');
+        txt.innerText = 5;
+        gauge.set(5);
+        document.gauge = gauge;
+      }
+
+      // Function to fetch speed data from API and update gauge chart
+      function fetchAndUpdateGaugeChart() {
+        // Make API call to fetch speed data
+        fetch('speed')
+          .then(response => response.json())
+          .then(data => {
+            const target = document.getElementById('preview-textfield');
+            target.innerText = data.speed;
+            document.gauge.set(data.speed);
+          })
+          .catch(error => console.error('Error fetching data:', error));
+      }
+
+      // Create gauge chart
+      createGaugeChart();
+
+      // Fetch speed data and update gauge chart every 5 seconds
+      setInterval(fetchAndUpdateGaugeChart, 1000);

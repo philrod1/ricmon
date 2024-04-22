@@ -10,14 +10,16 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/charts', (req, res, next) => {
-  const result = getJSON('http://127.0.0.1:8090/api/charts', '', 'get');
+  // const result = getJSON('http://127.0.0.1:8090/api/charts', '', 'get');
+  // IP of KONG_PROXY
+  const result = getJSON("http://10.110.154.237:32080/onboard/api/v1/charts", '', 'get');
   result.then( json => {
     res.send(json);
   });
 });
 
 router.get('/appmgr', (req, res, next) => {
-  const result = getJSON('http://10.97.161.231:8080/ric/v1/xapps', '', 'get');
+  const result = getJSON('http://10.111.123.39:8080/ric/v1/xapps', '', 'get');
   result.then( json => {
     res.send(json);
   });
@@ -26,18 +28,18 @@ router.get('/appmgr', (req, res, next) => {
   // });
 });
 
-router.get('/xapps', (req, res, next) => {
-  exec(`helm list --output json --namespace=ricxapp`, (error, stdout, stderr) => {
-    res.send(stdout);
-  });
-});
+// router.get('/xapps', (req, res, next) => {
+//   exec(`helm list --output json --namespace=ricxapp`, (error, stdout, stderr) => {
+//     res.send(stdout);
+//   });
+// });
 
-router.get('/ric', (req, res, next) => {
-  const result = getJSON('http://10.97.161.231:8080/ric/v1/config', '', 'get');
-  result.then( json => {
-    res.send(json);
-  });
-});
+// router.get('/ric', (req, res, next) => {
+//   const result = getJSON('http://10.97.161.231:8080/ric/v1/config', '', 'get');
+//   result.then( json => {
+//     res.send(json);
+//   });
+// });
 
 router.get('/e2mgr', (req, res, next) => {
   const result = getJSON('http://10.102.241.100:3800/v1/nodeb/states', '', 'get');
@@ -46,11 +48,11 @@ router.get('/e2mgr', (req, res, next) => {
   });
 });
 
-router.get('/e2sim', (req, res, next) => {
-  exec(`docker logs --tail=100 oransim`, (error, stdout, stderr) => {
-    res.render('logs', {dep: "oransim", ns: '', data: stdout});
-  });
-});
+// router.get('/e2sim', (req, res, next) => {
+//   exec(`docker logs --tail=100 oransim`, (error, stdout, stderr) => {
+//     res.render('logs', {dep: "oransim", ns: '', data: stdout});
+//   });
+// });
 
 router.get('/pods', (req, res, next) => {
   exec("kubectl get pods -A", (error, stdout, stderr) => {

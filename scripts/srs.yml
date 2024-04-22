@@ -1,0 +1,38 @@
+---
+  - name: "Start SRS Components"
+    hosts: localhost
+    connection: local 
+    tasks:
+
+    - name: "Clear out the old logs"
+      shell: "rm /home/evo/srs_logs/*.log"
+
+    - name: "Start EPC"
+      shell: "screen -mdSA epc /bin/bash -c 'srsepc 2>&1 | tee /home/evo/srs_logs/epc.log'"
+
+    - name: "Pause to let the EPC start"
+      ansible.builtin.pause:
+          seconds: 10
+
+    - name: "Start ENB 1"
+      shell: "screen -mdSA enb1 /bin/bash -c './startENB.sh 1 2>&1 | tee /home/evo/srs_logs/enb1.log'"
+
+    - name: "Pause to let ENB1 start"
+      ansible.builtin.pause:
+          seconds: 30
+
+#    - name: "Start ENB 2"
+#      shell: "screen -mdSA enb2 /bin/bash -c './startENB.sh 2 2>&1 | tee /home/evo/srs_logs/enb2.log'"
+
+#    - name: "Pause to let ENB2 start"
+#      ansible.builtin.pause:
+#          seconds: 10
+
+    - name: "Start UE1"
+      shell: "screen -mdSA ue1 /bin/bash -c './startUE.sh 1 2>&1 | tee /home/evo/srs_logs/ue1.log'"
+
+    - name: "Start UE2"
+      shell: "screen -mdSA ue2 /bin/bash -c './startUE.sh 2 2>&1 | tee /home/evo/srs_logs/ue2.log'"
+
+    - name: "Start UE3"
+      shell: "screen -mdSA ue3 /bin/bash -c './startUE.sh 3 2>&1 | tee /home/evo/srs_logs/ue3.log'"
