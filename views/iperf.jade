@@ -9,14 +9,32 @@ html
     h2 OAIC RIC
     include buttons.jade
     h2= title
-    #chart 
+    //- .row 
+    //-   .column
+    p ue_0
+    .chart#chart0
+    p ue_1
+    .chart#chart1
+      //-   p ue_2
+      //-   .chart#chart2
+      //-   p ue_4
+      //-   .chart#chart4
+      //- .column
+      //-   p ue_1
+      //-   .chart#chart1
+      //-   p ue_3
+      //-   .chart#chart3
+      //-   p ue_5
+      //-   .chart#chart5
     script.
       function fetchDataAndUpdateChart() {
       // Make API call to fetch data
       fetch('chart')
           .then(response => response.json())
           .then(data => {
-            chart.updateSeries(data);
+            for (let i = 0 ; i < charts.length ; i++) {
+              charts[i].updateSeries(data[i]);
+            }
           })
           .catch(error => console.error('Error fetching data:', error));
       }
@@ -25,30 +43,43 @@ html
       const options = {
         chart: {
             type: 'line',
-            height: 500,
+            height: 200,
             animations: {
-                enabled: false,
-            //-     easing: 'linear',
-            //-     dynamicAnimation: {
-            //-         speed: 1000
-            //-     }
+                enabled: false
             },
+            toolbar: { show: false },
         },
         stroke: {
             curve: 'smooth'
         },
         series: [{ data: [] }],
         xaxis: {
-            categories: []
-        },
+            categories: [],
+            labels: {
+              show: false
+            }
+        },    
+        //- yaxis: {
+        //-   min: 0,
+        //-   max: 10,
+        //-   tickAmount: 1,
+        //- }
       };
   
       // Create chart instance
-      const chart = new ApexCharts(document.querySelector("#chart"), options);
-  
-      // Render chart
-      chart.render();
-  
+      const charts = [
+        new ApexCharts(document.querySelector("#chart0"), options),
+        new ApexCharts(document.querySelector("#chart1"), options),
+        //- new ApexCharts(document.querySelector("#chart2"), options),
+        //- new ApexCharts(document.querySelector("#chart3"), options),
+        //- new ApexCharts(document.querySelector("#chart4"), options),
+        //- new ApexCharts(document.querySelector("#chart5"), options)
+      ]
+      // Render charts
+      charts.forEach(chart => {
+        chart.render();
+      });
+
       // Fetch data and update chart every second
       fetchDataAndUpdateChart(); // Initial fetch
-      setInterval(fetchDataAndUpdateChart, 1000); // Fetch every second
+      setInterval(fetchDataAndUpdateChart, 500); // Fetch every second

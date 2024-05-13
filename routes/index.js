@@ -42,7 +42,7 @@ router.get('/appmgr', (req, res, next) => {
 // });
 
 router.get('/e2mgr', (req, res, next) => {
-  const result = getJSON('http://10.102.241.100:3800/v1/nodeb/states', '', 'get');
+  const result = getJSON('http://10.109.33.157:3800/v1/nodeb/states', '', 'get');
   result.then( json => {
     res.send(json);
   });

@@ -123,3 +123,18 @@ canvas {
 .tab-button.active {
   background-color: #ccc; /* Change the background color for active state */
 }
+
+.chart {
+  margin: 0;
+  padding: 0;
+}
+
+.apexchart-canvas {
+  margin: 0;
+  padding: 0;
+}
+
+#p5js {
+  float: left;
+  width: 1100px;
+}

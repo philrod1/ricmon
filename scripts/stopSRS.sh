@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -a arr=("ue3" "ue2" "ue1" "enb1" "enb2" "epc")
+declare -a arr=("ue_0" "ue_1" "ue_2" "enb" "epc")
 
 for i in "${arr[@]}"
 do

@@ -23,8 +23,8 @@ html
             strokeWidth: 0.035, // The thickness
             color: '#000000' // Fill color
           },
-          limitMax: false,     // If false, max value increases automatically if value > maxValue
-          limitMin: false,     // If true, the min value of the gauge will be fixed
+          limitMax: true,     // If false, max value increases automatically if value > maxValue
+          limitMin: true,     // If true, the min value of the gauge will be fixed
           colorStart: '#6FADCF',   // Colors
           colorStop: '#8FC0DA',    // just experiment with them
           strokeColor: '#E0E0E0',  // to see which ones work best for you
@@ -33,19 +33,19 @@ html
         };
         const target = document.getElementById('canvas-preview');
         const gauge = new Gauge(target).setOptions(opts);
-        gauge.maxValue = 10;
+        gauge.maxValue = 2000;
         gauge.setMinValue(0);
         gauge.animationSpeed = 128;
         const txt = document.getElementById('preview-textfield');
-        txt.innerText = 5;
-        gauge.set(5);
+        txt.innerText = 0;
+        gauge.set(0);
         document.gauge = gauge;
       }
 
       // Function to fetch speed data from API and update gauge chart
       function fetchAndUpdateGaugeChart() {
         // Make API call to fetch speed data
-        fetch('speed')
+        fetch('speed/0')
           .then(response => response.json())
           .then(data => {
             const target = document.getElementById('preview-textfield');
@@ -58,5 +58,5 @@ html
       // Create gauge chart
       createGaugeChart();
 
-      // Fetch speed data and update gauge chart every 5 seconds
+      // Fetch speed data and update gauge chart
       setInterval(fetchAndUpdateGaugeChart, 1000);

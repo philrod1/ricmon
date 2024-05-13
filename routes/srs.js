@@ -25,59 +25,60 @@ router.get('/screens', (req, res, next) => {
     res.send({"screens": screens});
 });
 
-router.get('/speed', (req, res, next) => {
-    const child = child_process.spawnSync("tail", [ '-1', '/home/evo/iperf/client1.stats'], { encoding : 'utf8' });
-    const speed = parseFloat(child.stdout.trim().split(" ")[1])
-    if (speed > 100) {
-        speed /= 1000;
-    }
+router.get('/speed/:id', (req, res, next) => {
+    const id = req.params['id'];
+    const child = child_process.spawnSync("tail", [ '-1', `/home/evo/iperf/server${id}.speed`], { encoding : 'utf8' });
+    const lines = child.stdout.trim();
+    const speed = parseInt(lines);
     res.send({"speed": speed});
 });
 router.get('/chart', (req, res, next) => {
-    const child = child_process.spawnSync("tail", [ '-100', '/home/evo/iperf/client1.stats'], { encoding : 'utf8' });
-    const lines = child.stdout.trim().split("\n").splice(3,103);
-    let splitLines = lines.map((v) => {
-        const x = parseInt(v.split(".")[0]);
-        let y = parseFloat(v.split(" ")[1]);
-        y = isNaN(y) ? 0 : y;
-        if (y > 100) {
-            y /= 1000;
-        }
-        if (x) {
-            return {
-                'x': x, 
-                'y': y
-            };
-        } else {
-            return null;
-        }
-    });
-    splitLines = splitLines.filter(e => e);
-    splitLines = splitLines.slice(splitLines.length - 90);
-    const rollingAverage = [];
-    for (let i = 1 ; i <= splitLines.length ; i++) {
-        let total = 0;
-        const start = Math.max(0, i-10);
-        const count = Math.min(10, i);
-
-        for (let j = start ; j < start + count ; j++) {
-            total += splitLines[j].y
-        }
-        rollingAverage.push({
-            'y': total / count,
-            'x': splitLines[i-1].x
+    const results = []
+    for (let i = 0 ; i < 6 ; i++) {
+        const child = child_process.spawnSync("tail", [ '-100', `/home/evo/iperf/ue_${i}.stats`], { encoding : 'utf8' });
+        const lines = child.stdout.trim().split("\n").splice(3,103);
+        let splitLines = lines.map((v) => {
+            let x = parseInt(v.split(".")[0]);
+            let y = parseFloat(v.split(" ")[1]);
+            y = isNaN(y) ? 0 : y;
+            if (y > 100) {
+                y /= 1000;
+            }
+            if (x) {
+                return {
+                    'x': x, 
+                    'y': y
+                };
+            } else {
+                return null;
+            }
         });
-    }
-    res.send([
-        {
-            'name': 'Mbit/s',
-            'data':  splitLines
-        },
-        {
-            'name': 'Average',
-            'data': rollingAverage
+        splitLines = splitLines.filter(e => e);
+        let average = []
+        for (let i = 0 ; i < splitLines.length ; i++) {
+            let start = Math.max(0, i - 10);
+            let end = Math.min(start + 10, splitLines.length);
+            let ten = splitLines.slice(start, end);
+            let sum = ten.reduce((s, a) => s + a.y, 0);
+            average.push({
+                'x': splitLines[i].x,
+                'y': sum / ten.length
+            })
         }
-    ]);
+        splitLines = splitLines.slice(splitLines.length - 90);
+        average = average.slice(average.length - 90);
+        results.push([
+            {
+                'name': 'Mbit/s',
+                'data':  splitLines
+            },
+            {
+                'name': 'Average',
+                'data': average
+            }
+        ])
+    }
+    res.send(results);
 });
 
 router.get('/logs/:log', (req, res, next) => {

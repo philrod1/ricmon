@@ -6,48 +6,58 @@
         {
             "x": 40,
             "y": 500,
-            "power": 1000,
-            "name": "ENB1",
-            "id": "0x190"
+            "power": 800,
+            "name": "Cell_0",
+            "id": "cell_0",
+            "tx": 2000,
+            "rx": 2050
         },
         {
             "x": 960,
             "y": 500,
-            "power": 1000,
-            "name": "ENB2",
-            "id": "0x191"
+            "power": 800,
+            "name": "Cell_1",
+            "id": "cell_1",
+            "tx": 2025,
+            "rx": 2075
         }
     ],
     "ues": [
         {
+            "speed": 0.2,
+            "power": 400,
+            "name": "ue_0",
+            "id": "ue_0"
+        },
+        {
+            "speed": 0.3,
+            "power": 400,
+            "name": "ue_1",
+            "id": "ue_1"
+        },
+        {
+            "speed": 0.4,
+            "power": 400,
+            "name": "ue_2",
+            "id": "ue_2"
+        },
+        {
+            "speed": 0.3,
+            "power": 400,
+            "name": "ue_3",
+            "id": "ue_3"
+        },
+        {
+            "speed": 0.2,
+            "power": 400,
+            "name": "ue_4",
+            "id": "ue_4"
+        },
+        {
             "speed": 0.5,
-            "power": 500,
-            "name": "Normal"
-        },
-        {
-            "speed": 0.2,
-            "power": 500,
-            "name": "Slow"
-        },
-        {
-            "speed": 1,
-            "power": 500,
-            "name": "Fast"
-        },
-        {
-            "speed": 0.2,
-            "power": 500,
-            "name": "Slow"
-        },
-        {
-            "speed": 1,
-            "power": 500,
-            "name": "Fast"
-        },
-        {
-            "speed": 0,
-            "power": 500,
-            "name": "Stationary"
+            "power": 400,
+            "name": "ue_5",
+            "id": "ue_5"
         }
     ]
 }

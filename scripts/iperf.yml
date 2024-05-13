@@ -1,23 +1,47 @@
 ---
   - name: "Start iperf screens"
     hosts: localhost
+    gather_facts: no
     connection: local 
     tasks:
 
     - name: "Start iperf server 1"
-      shell: "screen -mdSA s1 /bin/bash -c 'iperf3 -s -i 1 -p 5201'"
+      shell: screen -mdSA s1 /bin/bash -c "/home/evo/scripts/startServer.sh 0"
 
     - name: "Start iperf server 2"
-      shell: "screen -mdSA s2 /bin/bash -c 'iperf3 -s -i 1 -p 5301'"
+      shell: screen -mdSA s2 /bin/bash -c "/home/evo/scripts/startServer.sh 1"
 
     - name: "Start iperf server 3"
-      shell: "screen -mdSA s3 /bin/bash -c 'iperf3 -s -i 1 -p 5401'"
+      shell: screen -mdSA s3 /bin/bash -c "/home/evo/scripts/startServer.sh 2"
 
-#    - name: "Start iperf client 1"
-#      shell: screen -mdSA c1 /bin/bash -c "ip netns exec ue1 iperf3 -c 172.16.0.1 -b 10M -i 1 -t 600 -p 5201 --forceflush | grep -Po '[0-9.]*(?= Mbits/sec)' > /home/evo/iperf/client1.stats'"
+    - name: "Start iperf server 4"
+      shell: screen -mdSA s4 /bin/bash -c "/home/evo/scripts/startServer.sh 3"
 
-#    - name: "Start iperf client 2"
-#      shell: "screen -mdSA c2 /bin/bash -c 'ip netns exec ue2 iperf3 -c 172.16.0.1 -b 10M -i 1 -t 600 -p 5301 2>&1 | tee /home/evo/srs_logs/client2.log'"
+    - name: "Start iperf server 5"
+      shell: screen -mdSA s5 /bin/bash -c "/home/evo/scripts/startServer.sh 4"
 
-#    - name: "Start iperf client 3"
-#      shell: "screen -mdSA c3 /bin/bash -c 'ip netns exec ue3 iperf3 -c 172.16.0.1 -b 10M -i 1 -t 600 -p 5401 2>&1 | tee /home/evo/srs_logs/client3.log'"
+    - name: "Start iperf server 6"
+      shell: screen -mdSA s6 /bin/bash -c "/home/evo/scripts/startServer.sh 5"
+
+    - name: Wait for 5 seconds
+      pause:
+        seconds: 5
+
+    - name: "Start iperf client 1"
+      shell: screen -mdSA c1 /bin/bash -c "/home/evo/scripts/startClient.sh 0"
+
+    - name: "Start iperf client 2"
+      shell: screen -mdSA c2 /bin/bash -c "/home/evo/scripts/startClient.sh 1"
+
+    - name: "Start iperf client 3"
+      shell: screen -mdSA c3 /bin/bash -c "/home/evo/scripts/startClient.sh 2"
+
+    - name: "Start iperf client 4"
+      shell: screen -mdSA c4 /bin/bash -c "/home/evo/scripts/startClient.sh 3"
+
+    - name: "Start iperf client 5"
+      shell: screen -mdSA c5 /bin/bash -c "/home/evo/scripts/startClient.sh 4"
+
+    - name: "Start iperf client 6"
+      shell: screen -mdSA c6 /bin/bash -c "/home/evo/scripts/startClient.sh 5"
+

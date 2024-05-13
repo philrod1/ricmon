@@ -1,40 +1,50 @@
 const ues = [];
 const gnbs = [];
+const socket = new WebSocket('ws://192.168.122.19:8765');
 
+// WebSocket event listeners
+socket.onopen = function(event) {
+  console.log('WebSocket connected');
+};
+
+socket.onmessage = function(event) {
+  console.log('Message from server:', event.data);
+};
+
+socket.onclose = function(event) {
+  console.log('WebSocket closed');
+};
+
+socket.onerror = function(error) {
+  console.error('WebSocket error:', error);
+};
 
 function setup() {
   loadJSON("configs/test.json", (data) => {
     let config;
     config = data;
     window.config = config;
-    createCanvas(config.width, config.height);
+    const myCanvas = createCanvas(config.width, config.height);
+    myCanvas.parent("p5js");
 
     for (let i = 0 ; i < config.ues.length ; i++) {
       const ue = config.ues[i];
-      ues.push(new UE(20, ue.speed, ue.name, ue.power));
+      ues.push(new UE(20, ue.speed, ue.name, ue.power, ue.id));
     }
     for (let i = 0 ; i < config.gnbs.length ; i++) {
       const gnb = config.gnbs[i];
-      gnbs.push(new GNB(gnb.x, gnb.y, gnb.name, gnb.power));
+      gnbs.push(new GNB(gnb.x, gnb.y, gnb.name, gnb.power, gnb.id));
       gnbs[i].setColor(getColour(i * (2 * PI / config.gnbs.length)));
     }
-
-    // for (let i = 0 ; i < 1000 ; i++) {
-    //   const ue = config.ues[i];
-    //   ues.push(new UE(20, 1, "UE", 500));
-    // }
-    // gnbs.push(new GNB(40,  40,  "GNB", 1000));
-    // gnbs.push(new GNB(40,  500, "GNB", 1000));
-    // gnbs.push(new GNB(40,  960, "GNB", 1000));
-    // gnbs.push(new GNB(500, 40,  "GNB", 1000));
-    // gnbs.push(new GNB(500, 960, "GNB", 1000));
-    // gnbs.push(new GNB(960, 40,  "GNB", 1000));
-    // gnbs.push(new GNB(960, 500, "GNB", 1000));
-    // gnbs.push(new GNB(960, 960, "GNB", 1000));
-    // gnbs.forEach((gnb, i) => {
-    //   gnb.setColor(getColour(i * (2 * PI / gnbs.length)));
-    // });
   });
+}
+
+function sendMessage(message) {
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send(message);
+  } else {
+    console.error('WebSocket is not open. Message not sent:', message);
+  }
 }
 
 function draw() {
@@ -48,10 +58,10 @@ function draw() {
   });
 }
 
-
 class UE {
   
-  constructor(size, speed, name, power) {
+  constructor(size, speed, name, power, id) {
+    this.id = id;
     const w = window.config.width;
     const h = window.config.height;
     this.xMax = w * 0.9;
@@ -73,7 +83,7 @@ class UE {
     this.scale = 255 / power;
     this.maxRotationSpeed = speed / 10;
   }
-  
+
   move() {
     this.rotateTowardsTarget();
     this.x = this.x + cos(this.heading) * this.speed;
@@ -89,11 +99,17 @@ class UE {
       fill(255,0,0);
     }
     circle(this.x, this.y, this.size);
+    textSize(20);
+    fill(0,0,0);
+    strokeWeight(0);
+    text(this.id, this.x, this.y-20);
+    strokeWeight(4);
     // circle(this.targetX, this.targetY, 2);
     fill(255,255,255);
     if (this.gnb) {
       const d =  dist(this.gnb.x, this.gnb.y, this.x, this.y);
       length = 600 - d;
+      strokeWeight(4);
       stroke(50,50,50,150);
       line(this.gnb.x, this.gnb.y, this.x, this.y);
       stroke(0,0,0,255);
@@ -108,6 +124,7 @@ class UE {
       fill("WHITE");
       if (d > this.maxDistance) {
         this.gnb.delUE();
+        sendMessage(`{"action": "disconnect", "ue": "${this.id}", "cell": "${this.gnb.id}"}`);
         this.gnb = null;
       }
     }
@@ -159,6 +176,7 @@ class UE {
     this.gnb = gnb;
     gnb.addUE();
     // console.log(`Send message to RIC: ${this.name} attached to ${gnb.name}`);
+    sendMessage(`{"action": "connect", "ue": "${this.id}", "cell": "${gnb.id}"}`);
   }
 
   rotateTowardsTarget() {
@@ -176,14 +194,14 @@ class UE {
     const rotationAngle = min(abs(angleToTarget), this.maxRotationSpeed);
     // Update heading
     this.heading += rotationDirection * rotationAngle;
-}
-  
-}
+  }
 
+}
 
 class GNB {
   
-  constructor(x, y, name, power) {
+  constructor(x, y, name, power, id) {
+    this.id = id;
     this.x = x;
     this.y = y;
     this.size = 20;
