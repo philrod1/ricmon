@@ -4,6 +4,7 @@ html
     title RIC
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js') // p5js library
+    script(src='https://cdn.jsdelivr.net/npm/apexcharts') // Include Apex Charts library
     
   body
     script(src='/javascripts/sketch.js')
@@ -11,11 +12,17 @@ html
     #p5js
     .speeds
       #speed0
+        .chart#chart0
       #speed1
+        .chart#chart1
       #speed2
+        .chart#chart2
       #speed3
+        .chart#chart3
       #speed4
+        .chart#chart4
       #speed5
+        .chart#chart5
 
     script.
 
@@ -24,11 +31,6 @@ html
         fetch('srs/speed/' + i)
             .then(response => response.json())
             .then(data => {
-              const ue = ues[i];
-              //- if (ue && ue.gnb) {
-              //-   console.log(ue.gnb.color);
-              //-   knobs[i].setProperty('colorFG', ue.gnb.color);
-              //- }
               knobs[i].setValue(data.speed || 0);
             })
             .catch(error => console.error('Error fetching data:', error));
@@ -53,7 +55,62 @@ html
         knobs[i] = knob;
       }
 
+      function fetchDataAndUpdateChart() {
+        // Make API call to fetch data
+        fetch('srs/chart')
+          .then(response => response.json())
+          .then(data => {
+            for (let i = 0 ; i < charts.length ; i++) {
+              charts[i].updateSeries(data[i]);
+            }
+          })
+          .catch(error => console.error('Error fetching data:', error));
+      }
+  
+      // Create initial chart configuration
+      const options = {
+        chart: {
+            type: 'line',
+            height: 130,
+            width: 600,
+            animations: {
+                enabled: false
+            },
+            toolbar: { show: false },
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2
+        },
+        series: [{ data: [] }],
+        xaxis: {
+            categories: [],
+            labels: {
+              show: false
+            }
+        },
+        yxais: {
+          min: 0,
+          max: 2000
+        }
+      };
+  
+      // Create chart instance
+      const charts = [
+        new ApexCharts(document.querySelector("#chart0"), options),
+        new ApexCharts(document.querySelector("#chart1"), options),
+        new ApexCharts(document.querySelector("#chart2"), options),
+        new ApexCharts(document.querySelector("#chart3"), options),
+        new ApexCharts(document.querySelector("#chart4"), options),
+        new ApexCharts(document.querySelector("#chart5"), options)
+      ]
+      // Render charts
+      charts.forEach(chart => {
+        chart.render();
+      });
 
+      fetchDataAndUpdateChart(); // Initial fetch
+      setInterval(fetchDataAndUpdateChart, 1000); // Fetch every second
       setInterval(fetchDataAndUpdateKnob, 1000);
 
       

@@ -3,6 +3,7 @@ const router = express.Router();
 const { getJSON } = require('../helper');
 const { exec } = require("child_process");
 const { redirect } = require('express/lib/response');
+const { log } = require('console');
 
 
 router.get('/', (req, res, next) => {
@@ -10,54 +11,29 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/charts', (req, res, next) => {
-  // const result = getJSON('http://127.0.0.1:8090/api/charts', '', 'get');
-  // IP of KONG_PROXY
-  const result = getJSON("http://10.110.154.237:32080/onboard/api/v1/charts", '', 'get');
+  const result = getJSON("http://10.98.203.209:32080/onboard/api/v1/charts", '', 'get');
   result.then( json => {
     res.send(json);
   });
 });
 
 router.get('/appmgr', (req, res, next) => {
-  const result = getJSON('http://10.111.123.39:8080/ric/v1/xapps', '', 'get');
+  const result = getJSON('http://10.97.238.42:8080/ric/v1/xapps', '', 'get');
   result.then( json => {
     res.send(json);
   });
-  // exec(`curl -s http://10.110.216.184:8080/ric/v1/xapps | jq .`, (error, stdout, stderr) => {
-  //   res.render('json', {title: 'App Manager Says ...', json: stdout});
-  // });
 });
-
-// router.get('/xapps', (req, res, next) => {
-//   exec(`helm list --output json --namespace=ricxapp`, (error, stdout, stderr) => {
-//     res.send(stdout);
-//   });
-// });
-
-// router.get('/ric', (req, res, next) => {
-//   const result = getJSON('http://10.97.161.231:8080/ric/v1/config', '', 'get');
-//   result.then( json => {
-//     res.send(json);
-//   });
-// });
 
 router.get('/e2mgr', (req, res, next) => {
-  const result = getJSON('http://10.109.33.157:3800/v1/nodeb/states', '', 'get');
+  const result = getJSON('http://10.103.37.163:3800/v1/nodeb/states', '', 'get');
   result.then( json => {
     res.send(json);
   });
 });
-
-// router.get('/e2sim', (req, res, next) => {
-//   exec(`docker logs --tail=100 oransim`, (error, stdout, stderr) => {
-//     res.render('logs', {dep: "oransim", ns: '', data: stdout});
-//   });
-// });
 
 router.get('/pods', (req, res, next) => {
   exec("kubectl get pods -A", (error, stdout, stderr) => {
       const arr = stdout.trim().split(/\r?\n/).map(x => x.split(/\s+/));
-      // console.log(arr);
       res.render('pods', {title: 'Pods', data: arr});
   });
 });
@@ -65,7 +41,6 @@ router.get('/pods', (req, res, next) => {
 router.get('/deployments', (req, res, next) => {
   exec("kubectl get deployments -A", (error, stdout, stderr) => {
       const arr = stdout.trim().split(/\r?\n/).map(x => x.split(/\s+/));
-      // console.log(arr);
       res.render('deployments', {title: 'Deployments', data: arr});
   });
 });
@@ -93,13 +68,20 @@ router.post('/deploy', (req, res, next) => {
 });
 
 router.get('/undeploy', (req, res, next) => {
-  exec(`helm list --output json --namespace=ricxapp`, (error, stdout, stderr) => {
-    res.render('undeploy', {apps: JSON.parse(stdout)});
+  const result = getJSON("http://10.98.203.209:32080/onboard/api/v1/charts", '', 'get');
+  result.then( json => {
+    let apps = []
+    for (const [, value] of Object.entries(JSON.parse(json))) {
+      apps.push(...value);
+      console.log(value[0]);
+    }
+    res.render('undeploy', {apps: apps});
   });
 });
 
 router.post('/undeploy', (req, res, next) => {
-  exec(`dms_cli uninstall --xapp_chart_name=${req.body['xapp-name']} --namespace=ricxapp`, (error, stdout, stderr) => {
+  const [name, version] = req.body['xapp-name'].split(":");
+  exec(`curl -L -X DELETE http://10.97.238.42:8080/ric/v1/xapps/${name} && curl -L -X DELETE "http://10.96.28.127:8080/api/charts/${name}/${version}"`, (error, stdout, stderr) => {
     if (error) {
       console.log(stderr);
     }

@@ -9,27 +9,16 @@ html
     h2 OAIC RIC
     include buttons.jade
     h2= title
-    //- .row 
-    //-   .column
-    p ue_0
     .chart#chart0
-    p ue_1
     .chart#chart1
-      //-   p ue_2
-      //-   .chart#chart2
-      //-   p ue_4
-      //-   .chart#chart4
-      //- .column
-      //-   p ue_1
-      //-   .chart#chart1
-      //-   p ue_3
-      //-   .chart#chart3
-      //-   p ue_5
-      //-   .chart#chart5
+    .chart#chart2
+    .chart#chart3
+    .chart#chart4
+    .chart#chart5
     script.
       function fetchDataAndUpdateChart() {
-      // Make API call to fetch data
-      fetch('chart')
+        // Make API call to fetch data
+        fetch('chart')
           .then(response => response.json())
           .then(data => {
             for (let i = 0 ; i < charts.length ; i++) {
@@ -43,14 +32,16 @@ html
       const options = {
         chart: {
             type: 'line',
-            height: 200,
+            height: 100,
+            width: 400,
             animations: {
                 enabled: false
             },
             toolbar: { show: false },
         },
         stroke: {
-            curve: 'smooth'
+            curve: 'smooth',
+            width: 1
         },
         series: [{ data: [] }],
         xaxis: {
@@ -58,22 +49,17 @@ html
             labels: {
               show: false
             }
-        },    
-        //- yaxis: {
-        //-   min: 0,
-        //-   max: 10,
-        //-   tickAmount: 1,
-        //- }
+        }
       };
   
       // Create chart instance
       const charts = [
         new ApexCharts(document.querySelector("#chart0"), options),
         new ApexCharts(document.querySelector("#chart1"), options),
-        //- new ApexCharts(document.querySelector("#chart2"), options),
-        //- new ApexCharts(document.querySelector("#chart3"), options),
-        //- new ApexCharts(document.querySelector("#chart4"), options),
-        //- new ApexCharts(document.querySelector("#chart5"), options)
+        new ApexCharts(document.querySelector("#chart2"), options),
+        new ApexCharts(document.querySelector("#chart3"), options),
+        new ApexCharts(document.querySelector("#chart4"), options),
+        new ApexCharts(document.querySelector("#chart5"), options)
       ]
       // Render charts
       charts.forEach(chart => {

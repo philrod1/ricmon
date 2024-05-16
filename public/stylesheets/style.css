@@ -4,7 +4,7 @@ html {
 
 body {
   height: 80%;
-  padding: 50px;
+  padding: 10px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -125,6 +125,7 @@ canvas {
 }
 
 .chart {
+  float: right;
   margin: 0;
   padding: 0;
 }

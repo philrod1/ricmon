@@ -7,8 +7,9 @@ git clone $1
 cd *
 # config_dir='xapp-descriptor'
 #config_file="${config_dir}/config.json"
-mv xapp-descriptor config
-mv deploy config
+cp -R init config
+cp -R xapp-descriptor config
+cp -R deploy config
 mv config/config.json config/config-file.json 
 config_dir='config'
 config_file="${config_dir}/config-file.json" 

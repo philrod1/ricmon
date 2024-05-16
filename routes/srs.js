@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const child_process = require('child_process');
+const { log } = require('console');
 
 router.get('', (req, res, next) => {
     var child = child_process.spawnSync("ls", ["/home/evo/srs_logs/"], { encoding : 'utf8' });
@@ -32,49 +33,26 @@ router.get('/speed/:id', (req, res, next) => {
     const speed = parseInt(lines);
     res.send({"speed": speed});
 });
+
 router.get('/chart', (req, res, next) => {
     const results = []
     for (let i = 0 ; i < 6 ; i++) {
-        const child = child_process.spawnSync("tail", [ '-100', `/home/evo/iperf/ue_${i}.stats`], { encoding : 'utf8' });
-        const lines = child.stdout.trim().split("\n").splice(3,103);
-        let splitLines = lines.map((v) => {
-            let x = parseInt(v.split(".")[0]);
-            let y = parseFloat(v.split(" ")[1]);
-            y = isNaN(y) ? 0 : y;
-            if (y > 100) {
-                y /= 1000;
-            }
-            if (x) {
-                return {
-                    'x': x, 
-                    'y': y
-                };
-            } else {
-                return null;
-            }
-        });
-        splitLines = splitLines.filter(e => e);
-        let average = []
-        for (let i = 0 ; i < splitLines.length ; i++) {
-            let start = Math.max(0, i - 10);
-            let end = Math.min(start + 10, splitLines.length);
-            let ten = splitLines.slice(start, end);
-            let sum = ten.reduce((s, a) => s + a.y, 0);
-            average.push({
-                'x': splitLines[i].x,
-                'y': sum / ten.length
-            })
+        const child = child_process.spawnSync("tail", [ '-100', `/home/evo/iperf/server${i}.speed`], { encoding : 'utf8' });
+        let lines = child.stdout.trim().split("\n");
+        if (lines.length < 100) {
+            let padding = [...Array(100-lines.length)].fill(0);
+            lines = padding.concat(lines);
         }
-        splitLines = splitLines.slice(splitLines.length - 90);
-        average = average.slice(average.length - 90);
+        let speeds = [];
+        for (let x = 0 ; x < lines.length ; x++) {
+            let y = parseInt(lines[x]) || 0;
+            speeds.push({ 'x': x, 'y': y });
+        }
+
         results.push([
             {
                 'name': 'Mbit/s',
-                'data':  splitLines
-            },
-            {
-                'name': 'Average',
-                'data': average
+                'data':  speeds
             }
         ])
     }
