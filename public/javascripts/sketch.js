@@ -1,6 +1,6 @@
 const ues = [];
 const gnbs = [];
-const socket = new WebSocket('ws://130.209.247.169:8765');
+const socket = new WebSocket('ws://192.168.122.122:8765');
 
 // WebSocket event listeners
 socket.onopen = function(event) {
