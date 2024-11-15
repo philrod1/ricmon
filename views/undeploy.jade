@@ -5,8 +5,8 @@ block content
   #container
   pre
     form(action='/undeploy',method='post')
-      - each app in apps
+      - each app, _ in apps
         p
-          input(id='id-#{app.name}', type='radio', value='#{app.name}', placeholder='', name='xapp-name')
-          label(for='id-#{app.name}') #{app.name}
+          input(id='id-#{app[0].name}', type='radio', value='#{app[0].name}:#{app[0].version}', placeholder='', name='xapp')
+          label(for='id-#{app[0].name}') #{app[0].name}
       input(type='submit',value='🗑',data-transition='fade', data-theme='c')
