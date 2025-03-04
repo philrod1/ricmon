@@ -17,7 +17,7 @@ block content
           - for (var i = 1; i < data.length; ++i) 
             tr
             - for (var j = 0; j < data[i].length; ++j)
-              td= data[i][j]
+              td= (j === 4) ? data[i][j].toString().match(/^\d+/)[0] : data[i][j]
             td
               a(href=`/logs/${data[i][0]}/${data[i][1]}/head`): button(type="button") Head
               a(href=`/logs/${data[i][0]}/${data[i][1]}/tail`): button(type="button") Tail
