@@ -11,21 +11,28 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/charts', (req, res, next) => {
-  const result = getJSON("http://10.97.12.62:32080/onboard/api/v1/charts", '', 'get');
+  // const result = getJSON("http://10.97.12.62:32080/onboard/api/v1/charts", '', 'get');
+  const result = getJSON('http://127.0.0.1:8090/api/charts', '', 'get');
   result.then( json => {
     res.send(json);
   });
 });
 
 router.get('/appmgr', (req, res, next) => {
-  const result = getJSON('http://10.109.140.200:8080/ric/v1/xapps', '', 'get');
+  const result = getJSON(`http://${appMgrIP}:8080/ric/v1/xapps`, '', 'get');
   result.then( json => {
     res.send(json);
   });
 });
 
+router.get('/xapps', (req, res, next) => {
+  exec(`helm list --output json --namespace=ricxapp`, (error, stdout, stderr) => {
+    res.send(stdout);
+  });
+});
+
 router.get('/e2mgr', (req, res, next) => {
-  const result = getJSON('http://10.108.54.194:3800/v1/nodeb/states', '', 'get');
+  const result = getJSON(`http://${e2MgrIp}:3800/v1/nodeb/states`, '', 'get');
   result.then( json => {
     res.send(json);
   });
@@ -68,20 +75,13 @@ router.post('/deploy', (req, res, next) => {
 });
 
 router.get('/undeploy', (req, res, next) => {
-  const result = getJSON("http://10.97.12.62:32080/onboard/api/v1/charts", '', 'get');
-  result.then( json => {
-    let apps = []
-    for (const [, value] of Object.entries(JSON.parse(json))) {
-      apps.push(...value);
-      console.log(value[0]);
-    }
-    res.render('undeploy', {apps: apps});
+  exec(`helm list --output json --namespace=ricxapp`, (error, stdout, stderr) => {
+    res.render('undeploy', {apps: JSON.parse(stdout)});
   });
 });
 
 router.post('/undeploy', (req, res, next) => {
-  const [name, version] = req.body['xapp-name'].split(":");
-  exec(`curl -L -X DELETE http://10.109.140.200:8080/ric/v1/xapps/${name} && curl -L -X DELETE "http://10.110.222.54:8080/api/charts/${name}/${version}"`, (error, stdout, stderr) => {
+  exec(`dms_cli uninstall --xapp_chart_name=${req.body['xapp-name']} --namespace=ricxapp`, (error, stdout, stderr) => {
     if (error) {
       console.log(stderr);
     }
