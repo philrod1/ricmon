@@ -5,6 +5,8 @@ const { exec } = require("child_process");
 const { redirect } = require('express/lib/response');
 const { log } = require('console');
 
+const appMgrIP = process.env["APPMGR_HTTP"] || "127.0.0.1";
+const e2MgrIp = process.env["E2MGR_HTTP"] || "127.0.0.1";
 
 router.get('/', (req, res, next) => {
   res.render('index', {title: 'RIC Stuff'});
