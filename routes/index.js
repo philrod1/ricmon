@@ -42,7 +42,7 @@ router.get('/e2mgr', (req, res, next) => {
 
 router.get('/pods', (req, res, next) => {
   exec("kubectl get pods -A", (error, stdout, stderr) => {
-      const arr = stdout.trim().split(/\r?\n/).map(x => x.split(/\s+/));
+      const arr = stdout.trim().split(/\r?\n/).map(x => x.split(/\t+/));
       res.render('pods', {title: 'Pods', data: arr});
   });
 });
