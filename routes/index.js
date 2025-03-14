@@ -7,6 +7,7 @@ const { log } = require('console');
 
 const appMgrIP = process.env["APPMGR_HTTP"] || "127.0.0.1";
 const e2MgrIp = process.env["E2MGR_HTTP"] || "127.0.0.1";
+const user = process.env["USER"] || "evo";
 
 router.get('/', (req, res, next) => {
   res.render('index', {title: 'RIC Stuff'});
@@ -21,20 +22,20 @@ router.get('/status', async (req, res, next) => {
   try {
 
     try {
-      let response = await axios.get(`http://${appMgrIP}:8080/ric/v1/health/alive`);
+      let response = await axios.get(`http://${appMgrIP}:3003/ric/v1/health/alive`);
       isAlive = response.status === 200;
     } catch (error) {
       console.error('Error fetching alive status:');
     }
 
     try {
-      response = await axios.get(`http://${appMgrIP}:8080/ric/v1/health/ready`);
+      response = await axios.get(`http://${appMgrIP}:3003/ric/v1/health/ready`);
       isReady = response.status === 200;
     } catch (error) {
       console.error('Error fetching ready status:');
     }
 
-    const { stdout: dmsStdout } = await execPromise("/home/evo/.local/bin/dms_cli health");
+    const { stdout: dmsStdout } = await execPromise(`/home/${user}/.local/bin/dms_cli health`);
 
     dmsReady = dmsStdout.trim() === "True";
 
