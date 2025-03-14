@@ -27,6 +27,8 @@ router.get('/status', async (req, res, next) => {
 
     try {
       let response = await axios.get(`http://${appMgrIP}:8080/ric/v1/health/alive`);
+      console.log("Response:", response);
+      
       isAlive = response.status === 200;
     } catch (error) {
       console.error('Error fetching alive status:');
