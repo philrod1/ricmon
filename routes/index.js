@@ -28,7 +28,7 @@ router.get('/status', async (req, res, next) => {
 
     try {
       let response = await axios.get(`http://${appMgrIP}:8080/ric/v1/health/alive`);
-      console.log("Response:", response);
+      console.log("Alive response:", response.status);
       
       isAlive = response.status === 200;
     } catch (error) {
@@ -37,6 +37,7 @@ router.get('/status', async (req, res, next) => {
 
     try {
       response = await axios.get(`http://${appMgrIP}:8080/ric/v1/health/ready`);
+      console.log("Ready response:", response.status);
       isReady = response.status === 200;
     } catch (error) {
       console.error('Error fetching ready status:');
