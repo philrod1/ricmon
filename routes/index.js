@@ -22,14 +22,14 @@ router.get('/status', async (req, res, next) => {
   try {
 
     try {
-      let response = await axios.get(`http://${appMgrIP}:3003/ric/v1/health/alive`);
+      let response = await axios.get(`http://${appMgrIP}:8080/ric/v1/health/alive`);
       isAlive = response.status === 200;
     } catch (error) {
       console.error('Error fetching alive status:');
     }
 
     try {
-      response = await axios.get(`http://${appMgrIP}:3003/ric/v1/health/ready`);
+      response = await axios.get(`http://${appMgrIP}:8080/ric/v1/health/ready`);
       isReady = response.status === 200;
     } catch (error) {
       console.error('Error fetching ready status:');
