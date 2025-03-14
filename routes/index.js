@@ -9,6 +9,10 @@ const appMgrIP = process.env["APPMGR_HTTP"] || "127.0.0.1";
 const e2MgrIp = process.env["E2MGR_HTTP"] || "127.0.0.1";
 const user = process.env["USER"] || "evo";
 
+console.log(`appMgrIP: ${appMgrIP}`);
+console.log(`e2MgrIp: ${e2MgrIp}`);
+console.log(`user: ${user}`);
+
 router.get('/', (req, res, next) => {
   res.render('index', {title: 'RIC Stuff'});
 });
