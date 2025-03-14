@@ -8,11 +8,11 @@ const { log } = require('console');
 
 const appMgrIP = process.env["APPMGR_HTTP"] || "127.0.0.1";
 const e2MgrIp = process.env["E2MGR_HTTP"] || "127.0.0.1";
-const user = process.env["USER"] || "evo";
+// const user = process.env["USER"] || "evo";
 
-console.log(`appMgrIP: ${appMgrIP}`);
-console.log(`e2MgrIp: ${e2MgrIp}`);
-console.log(`user: ${user}`);
+// console.log(`appMgrIP: ${appMgrIP}`);
+// console.log(`e2MgrIp: ${e2MgrIp}`);
+// console.log(`user: ${user}`);
 
 router.get('/', (req, res, next) => {
   res.render('index', {title: 'RIC Stuff'});
@@ -43,14 +43,18 @@ router.get('/status', async (req, res, next) => {
       console.error('Error fetching ready status:');
     }
 
-    const { stdout: dmsStdout } = await execPromise(`/home/${user}/.local/bin/dms_cli health`);
+    const { stdout: dmsStdout } = await execPromise(`/usr/local/bin/dms_cli health`);
 
     dmsReady = dmsStdout.trim() === "True";
+
+    console.log("DMS Ready:", dmsReady);
+    
 
     // Fetch E2 status
     try {
       let response = await axios.get(`http://${e2MgrIp}:3800/v1/nodeb/states`);
       if (response.status === 200) {
+        console.log("Connected response:", response.status);
         e2Status = response.data[0].connectionStatus === 'CONNECTED' ? 2 : 1;
       }
     } catch (error) {
