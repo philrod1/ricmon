@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const { getJSON } = require('../helper');
 const { exec } = require("child_process");
+const execPromise = util.promisify(exec);
 const { redirect } = require('express/lib/response');
 const { log } = require('console');
 
